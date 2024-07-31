@@ -22,7 +22,19 @@ export const authRegisterValidator = object({
         })
 });
 
+export const authLoginValidator = object({
+    body: object({
+        email: string({
+            required_error: 'Email is required'
+        }),
+        password: string({
+            required_error: 'Password is required'
+        })
+    }).strict()
+});
+
 export type AuthRegisterValidator = Omit<
     TypeOf<typeof authRegisterValidator>,
     'body.passwordConfirm'
 >;
+export type AuthLoginValidator = TypeOf<typeof authLoginValidator>;
