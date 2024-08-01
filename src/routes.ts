@@ -11,6 +11,18 @@ import {
 } from './validators/auth.validator';
 import validateRequest from './middleware/validate-request.middleware';
 import authenticateUser from './middleware/authenticate-user.middleware';
+import {
+    createProductHandler,
+    deleteProductHandler,
+    getProductHandler,
+    updateProductHandler
+} from './controllers/product.controller';
+import {
+    createProductSchema,
+    deleteProductSchema,
+    getProductSchema,
+    updateProductSchema
+} from './validators/product.validator';
 
 const routes = (app: Express): void => {
     /* None Authneticated Routes */
@@ -41,6 +53,32 @@ const routes = (app: Express): void => {
 
     app.get('/api/sessions', authUserSessionsHandler);
     app.get('/api/logout', authLogoutHandler);
+
+    /* Your Product Routes */
+
+    app.post(
+        '/api/products',
+        validateRequest(createProductSchema),
+        createProductHandler
+    );
+
+    app.put(
+        '/api/products',
+        validateRequest(updateProductSchema),
+        updateProductHandler
+    );
+
+    app.get(
+        '/api/products',
+        validateRequest(getProductSchema),
+        getProductHandler
+    );
+
+    app.delete(
+        '/api/products',
+        validateRequest(deleteProductSchema),
+        deleteProductHandler
+    );
 };
 
 export default routes;
