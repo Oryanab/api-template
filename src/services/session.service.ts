@@ -87,7 +87,7 @@ export const reIssueAccessToken = async (
                 ...user,
                 session: session._id
             },
-            { expiresIn: config.get<string>('accessTokenTtl') }
+            { expiresIn: config.get<number>('accessTokenTtl') }
         );
         return accessToken;
     } catch (error) {

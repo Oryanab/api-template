@@ -48,7 +48,7 @@ export const authLoginHandler = async (
             ...user,
             session: session!._id as string
         },
-        { expiresIn: config.get<string>('accessTokenTtl') }
+        { expiresIn: Number(config.get<number>('accessTokenTtl')) }
     );
 
     const refreshToken = signJwtToken(
@@ -56,15 +56,25 @@ export const authLoginHandler = async (
             ...user,
             session: session!._id as string
         },
-        { expiresIn: config.get<string>('refreshTokenTtl') }
+        { expiresIn: Number(config.get<number>('refreshTokenTtl')) }
     );
 
     response
         .cookie('x-access-token', accessToken, {
-            httpOnly: true
+            httpOnly: true,
+            maxAge: Number(config.get<number>('accessTokenTtl')),
+            domain: config.get<string>('domain'),
+            path: '/',
+            sameSite: 'strict',
+            secure: config.get<string>('env') !== 'dev'
         })
         .cookie('x-refresh', refreshToken, {
-            httpOnly: true
+            httpOnly: true,
+            maxAge: Number(config.get<number>('refreshTokenTtl')),
+            domain: config.get<string>('domain'),
+            path: '/',
+            sameSite: 'strict',
+            secure: config.get<string>('env') !== 'dev'
         })
         .status(200)
         .send(`${user?.name} logged in successfully`);
@@ -91,4 +101,11 @@ export const authLogoutHandler = async (
         .clearCookie('x-refresh')
         .status(200)
         .send(`${user?.name} logged out successfully`);
+};
+
+export const authSessionHandler = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    res.status(200).send(res.locals.user);
 };

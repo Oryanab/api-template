@@ -1,10 +1,9 @@
 import UserModel, { UserDocument } from '../models/user.model';
-import { get, omit } from 'lodash';
+import { omit } from 'lodash';
 import logger from '../utils/logger.utils';
 import { AuthRegisterValidator } from '../validators/auth.validator';
-import { verifyJwtToken } from '../utils/jwt.utils';
-import SessionModel from '../models/session.model';
 import { FilterQuery } from 'mongoose';
+import { MongoServerError } from 'mongodb';
 
 export const authRegister = async (
     input: Omit<AuthRegisterValidator['body'], 'passwordConfirm'>
@@ -14,6 +13,9 @@ export const authRegister = async (
         return omit(user.toJSON(), 'password');
     } catch (error: any) {
         logger.error(error);
+        if (error instanceof MongoServerError) {
+            throw new Error(error.message);
+        }
         throw new Error('Failed to register user, please try again later');
     }
 };

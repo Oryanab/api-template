@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { get } from 'lodash';
 import { verifyJwtToken } from '../utils/jwt.utils';
 import { reIssueAccessToken } from '../services/session.service';
-import logger from '../utils/logger.utils';
+import config from 'config';
 
 const authenticateUser = async (
     request: Request,
@@ -13,8 +13,8 @@ const authenticateUser = async (
         const accessToken = get(request, 'cookies.x-access-token');
         const refreshToken = get(request, 'cookies.x-refresh');
 
-        if (!accessToken) {
-            throw new Error('Unauthenticated Access Denied');
+        if (!accessToken && !refreshToken) {
+            throw new Error('Unauthenticated Please login');
         }
 
         const { decoded, expired } = verifyJwtToken(accessToken as string);
@@ -31,7 +31,12 @@ const authenticateUser = async (
                 const { decoded } = verifyJwtToken(newAccessToken as string);
                 response.locals.user = decoded;
                 response.cookie('x-access-token', newAccessToken, {
-                    httpOnly: true
+                    httpOnly: true,
+                    maxAge: Number(config.get<number>('accessTokenTtl')),
+                    domain: config.get<string>('domain'),
+                    path: '/',
+                    sameSite: 'strict',
+                    secure: config.get<string>('env') !== 'dev'
                 });
                 next();
             }

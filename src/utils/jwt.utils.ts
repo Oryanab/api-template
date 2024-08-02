@@ -36,7 +36,7 @@ export const verifyJwtToken = (
     } catch (error: any) {
         return {
             valid: false,
-            expired: error.message === 'jwt expired',
+            expired: true,
             decoded: null
         };
     }

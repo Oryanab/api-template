@@ -3,6 +3,7 @@ import {
     authLoginHandler,
     authLogoutHandler,
     authRegisterHandler,
+    authSessionHandler,
     authUserSessionsHandler
 } from './controllers/auth.controller';
 import {
@@ -50,7 +51,7 @@ const routes = (app: Express): void => {
     app.use(authenticateUser);
 
     /* Auth Routes */
-
+    app.get('/api/session', authSessionHandler);
     app.get('/api/sessions', authUserSessionsHandler);
     app.get('/api/logout', authLogoutHandler);
 
