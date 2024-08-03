@@ -37,7 +37,7 @@ const authenticateUser = async (
                     domain: config.get<string>('domain'),
                     path: '/',
                     sameSite: 'strict',
-                    secure: config.get<string>('env') !== 'dev'
+                    secure: config.get<string>('env') !== 'development'
                 });
                 next();
             }

@@ -82,7 +82,7 @@ const createServer = (): Express => {
                     domain: config.get<string>('domain'),
                     path: '/',
                     sameSite: 'strict',
-                    secure: config.get<string>('env') !== 'dev'
+                    secure: config.get<string>('env') !== 'development'
                 })
                 .status(200)
                 .send('csrf token installed');

@@ -71,7 +71,7 @@ export const authLoginHandler = async (
                 domain: config.get<string>('domain'),
                 path: '/',
                 sameSite: 'strict',
-                secure: config.get<string>('env') !== 'dev'
+                secure: config.get<string>('env') !== 'development'
             })
             .cookie('x-refresh', refreshToken, {
                 httpOnly: true,
@@ -79,7 +79,7 @@ export const authLoginHandler = async (
                 domain: config.get<string>('domain'),
                 path: '/',
                 sameSite: 'strict',
-                secure: config.get<string>('env') !== 'dev'
+                secure: config.get<string>('env') !== 'development'
             })
             .status(200)
             .send(`${user?.name} logged in successfully`);
