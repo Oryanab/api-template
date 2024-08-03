@@ -24,6 +24,11 @@ import {
     getProductSchema,
     updateProductSchema
 } from './validators/product.validator';
+import {
+    apiRequestLimiter,
+    authLoginLimiter,
+    authRegisterLimiter
+} from './middleware/rate-limiting.middleware';
 
 const routes = (app: Express): void => {
     /* None Authneticated Routes */
@@ -36,19 +41,18 @@ const routes = (app: Express): void => {
     /* Auth Routes */
     app.post(
         '/api/register',
-        validateRequest(authRegisterValidator),
+        [authRegisterLimiter, validateRequest(authRegisterValidator)],
         authRegisterHandler
     );
 
     app.post(
         '/api/login',
-        validateRequest(authLoginValidator),
+        [authLoginLimiter, validateRequest(authLoginValidator)],
         authLoginHandler
     );
 
     /* Authneticated Routes */
-
-    app.use(authenticateUser);
+    app.use('/api', [apiRequestLimiter, authenticateUser]);
 
     /* Auth Routes */
     app.get('/api/session', authSessionHandler);
