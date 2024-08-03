@@ -3,6 +3,7 @@ import { get } from 'lodash';
 import { verifyJwtToken } from '../utils/jwt.utils';
 import { reIssueAccessToken } from '../services/session.service';
 import config from 'config';
+import { AuthenticationError } from '../errors/authentication-error.error';
 
 const authenticateUser = async (
     request: Request,
@@ -44,7 +45,7 @@ const authenticateUser = async (
             throw new Error('Session expired, please login');
         }
     } catch (error: any) {
-        response.status(403).send(error.message);
+        next(new AuthenticationError(error.message as string));
     }
 };
 
