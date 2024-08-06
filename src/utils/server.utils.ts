@@ -34,7 +34,7 @@ const createServer = (): Express => {
             methods: ['GET', 'POST', 'PUT', 'DELETE'],
             allowedHeaders: [
                 'Content-Type',
-                'Authorization',
+                'X-Requested-With',
                 'X-XSRF-TOKEN',
                 'X-CSRF-Token'
             ],
